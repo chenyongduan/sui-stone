@@ -78,11 +78,12 @@ module stone::stone_market {
 
     assert!(price == coin::value(&paid), EAmountIncorrect);
 
-    if (dof::exists_(&market.id, owner)) {
-        coin::join(dof::borrow_mut<address, Coin<SUI>>(&mut market.id, owner), paid)
-    } else {
-        dof::add(&mut market.id, owner, paid)
-    };
+    transfer::transfer(paid, owner);
+    // if (dof::exists_(&market.id, owner)) {
+    //   coin::join(dof::borrow_mut<address, Coin<SUI>>(&mut market.id, owner), paid);
+    // } else {
+    //   dof::add(&mut market.id, owner, paid);
+    // };
 
     object::delete(id);
     item
@@ -122,8 +123,8 @@ module stone::stone_market {
     let coin = vec::pop_back(&mut coins);
     pay::join_vec(&mut coin, coins);
     let paid = coin::split(&mut coin, listing.price, ctx);
-
     transfer::transfer(coin, tx_context::sender(ctx));
+    
     purchase_and_take(market, listing_id, paid, ctx)
   }
 
@@ -132,6 +133,7 @@ module stone::stone_market {
     use sui::test_scenario;
     use std::debug;
     use stone::stone::{Self, StoneRegister};
+    use sui::tx_context;
 
     let admin = @0xBABE;
     let scenario_val = test_scenario::begin(admin);
@@ -143,9 +145,20 @@ module stone::stone_market {
 
     test_scenario::next_tx(scenario, admin);
     {
+      let coin = coin::mint_for_testing<SUI>(100, test_scenario::ctx(scenario));
+      debug::print(&coin);
+      transfer::transfer(coin, tx_context::sender(test_scenario::ctx(scenario)));
+
       let stoneReg = test_scenario::take_shared<StoneRegister>(scenario);
       stone::create_stone(&mut stoneReg, test_scenario::ctx(scenario));
       test_scenario::return_shared(stoneReg);
+    };
+
+    test_scenario::next_tx(scenario, admin); 
+    {
+      let coinSelf = test_scenario::take_from_sender<Coin<SUI>>(scenario);
+      debug::print(&coinSelf);
+      test_scenario::return_to_sender(scenario, coinSelf);
     };
 
     test_scenario::next_tx(scenario, admin);

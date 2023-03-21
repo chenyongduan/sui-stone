@@ -68,20 +68,20 @@ module stone::stone {
     let (body_idx, sequence2) = getSlotIndex(&sequence1, BODY_COUNT);
     let (clothes_idx, sequence3) = getSlotIndex(&sequence2, CLOTHES_COUNT);
     let (earring_idx, sequence4) = getSlotIndex(&sequence3, EARRING_COUNT);
-    let (glass_idx, sequence5) = getSlotIndex(&sequence4, GLASS_COUNT);
-    let (head_idx, sequence6) = getSlotIndex(&sequence5, HEAD_COUNT);
-    let (mouth_idx, sequence7) = getSlotIndex(&sequence6, MOUTH_COUNT);
-    let (necklace_idx, _) = getSlotIndex(&sequence7, NECKLACE_COUNT);
+    let (head_idx, sequence5) = getSlotIndex(&sequence4, HEAD_COUNT);
+    let (glass_idx, sequence6) = getSlotIndex(&sequence5, GLASS_COUNT);
+    let (necklace_idx, sequence7) = getSlotIndex(&sequence6, NECKLACE_COUNT);
+    let (mouth_idx, _) = getSlotIndex(&sequence7, MOUTH_COUNT);
 
     let attributes = vec::empty();
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"background"), value: background_idx });
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"body"), value: body_idx });
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"clothes"), value: clothes_idx });
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"earring"), value: earring_idx });
-    vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"glass"), value: glass_idx });
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"head"), value: head_idx });
-    vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"mouth"), value: mouth_idx });
+    vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"glass"), value: glass_idx });
     vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"necklace"), value: necklace_idx });
+    vec::push_back(&mut attributes, Attribute { name:  string::utf8(b"mouth"), value: mouth_idx });
 
     let stone = Stone {
       id,
