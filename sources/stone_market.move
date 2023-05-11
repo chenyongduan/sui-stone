@@ -61,7 +61,7 @@ module stone::stone_market {
     listing_id: ID,
     ctx: &TxContext
   ) {
-    transfer::transfer(
+    transfer::public_transfer(
       delist(market, listing_id, ctx),
       tx_context::sender(ctx)
     );
@@ -78,12 +78,7 @@ module stone::stone_market {
 
     assert!(price == coin::value(&paid), EAmountIncorrect);
 
-    transfer::transfer(paid, owner);
-    // if (dof::exists_(&market.id, owner)) {
-    //   coin::join(dof::borrow_mut<address, Coin<SUI>>(&mut market.id, owner), paid);
-    // } else {
-    //   dof::add(&mut market.id, owner, paid);
-    // };
+    transfer::public_transfer(paid, owner);
 
     object::delete(id);
     item
@@ -95,7 +90,7 @@ module stone::stone_market {
     paid: Coin<SUI>,
     ctx: &TxContext
   ) {
-    transfer::transfer(
+    transfer::public_transfer(
         purchase(market, listing_id, paid, ctx),
         tx_context::sender(ctx)
     )
@@ -123,7 +118,7 @@ module stone::stone_market {
     let coin = vec::pop_back(&mut coins);
     pay::join_vec(&mut coin, coins);
     let paid = coin::split(&mut coin, listing.price, ctx);
-    transfer::transfer(coin, tx_context::sender(ctx));
+    transfer::public_transfer(coin, tx_context::sender(ctx));
     
     purchase_and_take(market, listing_id, paid, ctx)
   }
@@ -147,7 +142,7 @@ module stone::stone_market {
     {
       let coin = coin::mint_for_testing<SUI>(100, test_scenario::ctx(scenario));
       debug::print(&coin);
-      transfer::transfer(coin, tx_context::sender(test_scenario::ctx(scenario)));
+      transfer::public_transfer(coin, tx_context::sender(test_scenario::ctx(scenario)));
 
       let stoneReg = test_scenario::take_shared<StoneRegister>(scenario);
       stone::create_stone(&mut stoneReg, test_scenario::ctx(scenario));
